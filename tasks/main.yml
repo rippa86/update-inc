@@ -7,21 +7,11 @@
 - name: ServiceNow download attachment module
   servicenow.itsm.attachment:
     instance:
-      host: https://instance_id.service-now.com
-      username: user
-      password: pass
+      host: "{{ snow_instance }}"
+      username: "{{ snow_username }}"
+      password: "{{ snow_password }}"
     dest: "/tmp/{{ inc_number }}_journal.log"
     sys_id: "{{ inc_sys_id }}"
-
-- name: ServiceNow download attachment module
-  servicenow.itsm.attachment:
-    instance:
-      host: https://instance_id.service-now.com
-      username: user
-      password: pass
-    dest: "/tmp/{{ inc_number }}_messages.log"
-    sys_id: "{{ inc_sys_id }}"
-
 
 - name: ServiceNow download attachment module
   servicenow.itsm.attachment:
@@ -29,8 +19,8 @@
       host: "{{ snow_instance }}"
       username: "{{ snow_username }}"
       password: "{{ snow_password }}"
-    dest: /tmp/sn-attachment
-    sys_id: 003a3ef24ff1120031577d2ca310c74b
+    dest: "/tmp/{{ inc_number }}_messages.log"
+    sys_id: "{{ inc_sys_id }}"
 
 - name: Update ServiceNow ticket to indicate start
   servicenow.itsm.api:
