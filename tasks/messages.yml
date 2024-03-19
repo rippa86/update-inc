@@ -1,3 +1,8 @@
+- name: adding facts
+  ansible.builtin.set_fact:
+    journal_path: "/tmp/{{ inc_number }}_journal.log"
+    messages_path: "/tmp/{{ inc_number }}_messages.log"
+
 - name: gather details from journal log files
   ansible.builtin.shell: "journalctl -exu {{ rhel_service }}.service | grep -m 1 -B 10 -A 10 'failed' > /tmp/{{ inc_number }}_journal.log"
   register: journal_log
