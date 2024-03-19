@@ -4,23 +4,6 @@
   ansible.builtin.include_tasks: messages.yml
   when: gather_messages 
 
-# - name: ServiceNow download attachment module
-#   servicenow.itsm.attachment:
-#     instance:
-#       host: "{{ snow_instance }}"
-#       username: "{{ snow_username }}"
-#       password: "{{ snow_password }}"
-#     dest: "/tmp/{{ inc_number }}_journal.log"
-#     sys_id: "{{ inc_sys_id }}"
-
-# - name: ServiceNow download attachment module
-#   servicenow.itsm.attachment:
-#     instance:
-#       host: "{{ snow_instance }}"
-#       username: "{{ snow_username }}"
-#       password: "{{ snow_password }}"
-#     dest: "/tmp/{{ inc_number }}_messages.log"
-#     sys_id: "{{ inc_sys_id }}"
 - name: attach stuff
   servicenow.itsm.attachment_upload:
     instance:
@@ -30,9 +13,9 @@
     table_name: incident
     table_sys_id: "{{ inc_sys_id }}"
     attachments:
-      - path: "/tmp/{{ inc_number }}_journal.log"
+      - path: "{{ journal_path }}"
         name: Journal
-      - path: "/tmp/{{ inc_number }}_messages.log"
+      - path: "{{ messages_path }}"
         name: messages
 
 
@@ -53,5 +36,5 @@
   community.general.slack:
     token: T0508SWKB2N/B04V8C4P6A3/fr3b7rtyxJrZgjuRqQ1UCT1d
     channel: "#devops"
-    msg: '<{{ snow_instance }}now/sow/record/incident/{{ inc_sysid }}{{ inc_number }}|{{ inc_number }}> - Incident raised against {{ inc_hostname }} Ansible has attached logs for you :+1:'
+    msg: '<{{ snow_instance }}now/sow/record/incident/{{ inc_sys_id }}{{ inc_number }}|{{ inc_number }}> - Incident raised against {{ inc_hostname }} Ansible has attached logs for you :+1:'
   when: slack
