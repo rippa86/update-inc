@@ -4,23 +4,36 @@
   ansible.builtin.include_tasks: messages.yml
   when: gather_messages 
 
-- name: ServiceNow download attachment module
-  servicenow.itsm.attachment:
-    instance:
-      host: "{{ snow_instance }}"
-      username: "{{ snow_username }}"
-      password: "{{ snow_password }}"
-    dest: "/tmp/{{ inc_number }}_journal.log"
-    sys_id: "{{ inc_sys_id }}"
+# - name: ServiceNow download attachment module
+#   servicenow.itsm.attachment:
+#     instance:
+#       host: "{{ snow_instance }}"
+#       username: "{{ snow_username }}"
+#       password: "{{ snow_password }}"
+#     dest: "/tmp/{{ inc_number }}_journal.log"
+#     sys_id: "{{ inc_sys_id }}"
 
-- name: ServiceNow download attachment module
-  servicenow.itsm.attachment:
-    instance:
-      host: "{{ snow_instance }}"
-      username: "{{ snow_username }}"
-      password: "{{ snow_password }}"
-    dest: "/tmp/{{ inc_number }}_messages.log"
-    sys_id: "{{ inc_sys_id }}"
+# - name: ServiceNow download attachment module
+#   servicenow.itsm.attachment:
+#     instance:
+#       host: "{{ snow_instance }}"
+#       username: "{{ snow_username }}"
+#       password: "{{ snow_password }}"
+#     dest: "/tmp/{{ inc_number }}_messages.log"
+#     sys_id: "{{ inc_sys_id }}"
+- servicenow.itsm.attachment_upload:
+  instance:
+    host: "{{ snow_instance }}"
+    username: "{{ snow_username }}"
+    password: "{{ snow_password }}"
+  table_name: incident
+  table_sys_id: "{{ inc_sys_id }}"
+  attachments:
+    - path: "/tmp/{{ inc_number }}_journal.log"
+      name: Journal
+    - path: "/tmp/{{ inc_number }}_messages.log"
+      name: messages
+
 
 - name: Update ServiceNow ticket to indicate start
   servicenow.itsm.api:
