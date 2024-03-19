@@ -1,0 +1,7 @@
+- name: gather details from journal log files
+  ansible.builtin.shell: "journalctl -exu {{ rhel_service }}.service | grep -m 1 -B 10 -A 10 'failed' > /tmp/{{ inc_number }}_journal.log"
+  register: journal_log
+
+- name: gather messages log
+  ansible.builtin.shell: "tac /var/log/messages | grep -m 1 -B 10 -A 10 'status=1/FAILURE' | tac > /tmp/{{ inc_number }}_messages.log"
+  register: messages_log

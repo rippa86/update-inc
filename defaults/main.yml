@@ -1,0 +1,9 @@
+---
+# defaults file for update-inc
+gather_messages: true
+update_slack: false
+file_location: "/var/log/messages"
+inc_sys_id: "12345"
+inc_number: "youneedtosetme"
+out_put: "/tmp/"
+rhel_service: "httpd"

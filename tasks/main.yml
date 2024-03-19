@@ -1,0 +1,53 @@
+---
+# tasks file for update-inc
+- name: create log files
+  ansible.builtin.include_tasks: messages.yml
+  when: gather_messages 
+
+- name: ServiceNow download attachment module
+  servicenow.itsm.attachment:
+    instance:
+      host: https://instance_id.service-now.com
+      username: user
+      password: pass
+    dest: "/tmp/{{ inc_number }}_journal.log"
+    sys_id: "{{ inc_sys_id }}"
+
+- name: ServiceNow download attachment module
+  servicenow.itsm.attachment:
+    instance:
+      host: https://instance_id.service-now.com
+      username: user
+      password: pass
+    dest: "/tmp/{{ inc_number }}_messages.log"
+    sys_id: "{{ inc_sys_id }}"
+
+
+- name: ServiceNow download attachment module
+  servicenow.itsm.attachment:
+    instance:
+      host: "{{ snow_instance }}"
+      username: "{{ snow_username }}"
+      password: "{{ snow_password }}"
+    dest: /tmp/sn-attachment
+    sys_id: 003a3ef24ff1120031577d2ca310c74b
+
+- name: Update ServiceNow ticket to indicate start
+  servicenow.itsm.api:
+    instance:
+      host: "{{ snow_instance }}"
+      username: "{{ snow_username }}"
+      password: "{{ snow_password }}"
+    resource: incident
+    action: patch
+    sys_id: "{{ inc_sys_id }}"
+    data:
+      work_notes: "Event Driven Ansible has added recient log files. AAP Job ID: {{ tower_job_id }}"
+  register: snow_var
+
+- name: Post URL to Slack channel
+  community.general.slack:
+    token: T0508SWKB2N/B04V8C4P6A3/fr3b7rtyxJrZgjuRqQ1UCT1d
+    channel: "#devops"
+    msg: '<{{ snow_instance }}now/sow/record/incident/{{ inc_sysid }}{{ inc_number }}|{{ inc_number }}> - Incident raised against {{ inc_hostname }} Ansible has attached logs for you :+1:'
+  when: slack
